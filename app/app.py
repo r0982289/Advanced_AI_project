@@ -111,6 +111,26 @@ def display_recipe(recipe):
 
     return False
 
+# Measurement Conversion Functions
+def metric_to_us_cups(metric_ml):
+    return metric_ml / 240  # 1 US cup = 240ml
+
+def us_to_metric_cups(us_cups):
+    return us_cups * 240  # 1 US cup = 240ml
+
+# UI for Measurement Converter
+def measurement_converter_ui():
+    st.sidebar.markdown("### 🧪 Measurement Converter")
+    conversion_direction = st.sidebar.radio("Convert from:", ["Belgian (Metric) to U.S.", "U.S. to Belgian (Metric)"])
+    cups_input = st.sidebar.number_input("Enter number of cups:", min_value=0.0, step=0.1, format="%.2f")
+
+    if conversion_direction == "Belgian (Metric) to U.S.":
+        converted = metric_to_us_cups(cups_input * 250)  # Belgian cup = 250 ml
+        st.sidebar.write(f"≈ **{converted:.2f} U.S. cups**")
+    else:
+        converted = us_to_metric_cups(cups_input)
+        st.sidebar.write(f"≈ **{converted / 250:.2f} Belgian cups** (or {converted:.0f} ml)")
+
 
 # Main 
 st.title("🍳 Chefmate")
@@ -171,3 +191,6 @@ if st.sidebar.checkbox("Translate Recipe"):
         st.sidebar.write(f"**Directions**: {directions_translated}")
     else:
         st.sidebar.warning("Please select a recipe first.")
+
+# Measurement Converter UI
+measurement_converter_ui()
