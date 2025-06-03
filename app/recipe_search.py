@@ -7,7 +7,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import nltk
 from tqdm import tqdm
 import pickle
-
+nltk.download('punkt_tab')
 nltk.download('punkt')
 nltk.download('stopwords')
 stop_words = set(stopwords.words('english'))
@@ -71,11 +71,13 @@ def search_recipes(query, diet=None, max_calories=None, top_n=5):
         'diet_type',
         'url' 
         ]
+        positions = df.index.get_indexer(mask[mask].index)
+
         # Compute similarity scores for filtered recipes
-        sim_scores = cosine_similarity(query_vec, X[mask]).flatten()
+        sim_scores = cosine_similarity(query_vec, X[positions]).flatten()
         top_indices = sim_scores.argsort()[-top_n:][::-1]  # Get top N indices
         
-        results = df[mask].iloc[top_indices][essential_cols].copy()
+        results = df.iloc[positions].iloc[top_indices][essential_cols].copy()
         results['similarity'] = sim_scores[top_indices]
         return results
         
