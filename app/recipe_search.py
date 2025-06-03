@@ -13,7 +13,7 @@ nltk.download('stopwords')
 stop_words = set(stopwords.words('english'))
 
 
-df = pd.read_csv("data/recipes.csv")
+df = pd.read_csv("/data/recipes.csv")
 
 
 def preprocess_ingredients(text):
