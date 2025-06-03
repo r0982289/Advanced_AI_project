@@ -8,6 +8,10 @@ from bs4 import BeautifulSoup
 from llm_services import translate_text
 import sys
 import torch
+import pickle
+from sklearn.metrics.pairwise import cosine_similarity
+
+
 import nltk
 nltk.download('punkt')
 
@@ -198,3 +202,36 @@ if st.sidebar.checkbox("Translate Recipe"):
 
 # Measurement Converter UI
 measurement_converter_ui()
+
+
+
+# Load pre-trained embeddings
+with open("data/ingredient_embeddings.pkl", "rb") as f:
+    data = pickle.load(f)
+    embeddings = data["embeddings"]
+    vocab = data["vocab"]
+    inv_vocab = data["inv_vocab"]
+
+def suggest_substitutes_cosine(ingredient, top_k=3):
+    if ingredient not in vocab:
+        return []
+    idx = vocab[ingredient]
+    vec = embeddings[idx].reshape(1, -1)
+    sims = cosine_similarity(vec, embeddings)[0]
+    top_idxs = sims.argsort()[-top_k-1:-1][::-1]
+    return [inv_vocab[i] for i in top_idxs]
+
+# Sidebar-only UI
+with st.sidebar:
+    st.sidebar.header("Ingredient Substitutionsss")
+    ingredient = st.text_input("Enter an ingredient (e.g., 'egg')", key="substitution_input")
+
+    if ingredient:
+        substitutes = suggest_substitutes_cosine(ingredient.lower())
+        if substitutes:
+            st.markdown(f"**Suggested substitutes for _{ingredient}_:**")
+            for sub in substitutes:
+                st.write(f"• {sub}")
+        else:
+            st.write("No substitutes found. Try a different ingredient.")
+
