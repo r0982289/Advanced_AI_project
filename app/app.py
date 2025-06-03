@@ -6,8 +6,12 @@ from io import BytesIO
 import re
 from bs4 import BeautifulSoup
 from llm_services import translate_text
+import sys
+import torch
+import nltk
+nltk.download('punkt')
 
-
+sys.modules['torch.classes'].__path__ = []
 # css
 st.markdown("""
 <style>
