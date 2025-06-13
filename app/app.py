@@ -223,7 +223,7 @@ def suggest_substitutes_cosine(ingredient, top_k=3):
 
 # Sidebar-only UI
 with st.sidebar:
-    st.sidebar.header("Ingredient Substitutionsss")
+    st.sidebar.header("Ingredient Substitutions")
     ingredient = st.text_input("Enter an ingredient (e.g., 'egg')", key="substitution_input")
 
     if ingredient:
